@@ -51,7 +51,7 @@
     <div class="container">
         <header>
             <div>
-                <h1>Daily Math Practice</h1>
+                <h1>Daily Maths Practice</h1>
             </div>
             <div class="topbar">
                 <div class="kpi">
@@ -96,14 +96,6 @@
                     </label>
                     <button id="newSet" class="btn btn-primary">New Set</button>
                     <button id="reveal" class="btn btn-ghost">Reveal Answers</button>
-                </div>
-
-                <div style="margin-top:12px">
-                    <h3 style="margin-top:0">Tips</h3>
-                    <ul class="small" style="line-height:1.6">
-                        <li>Start with Easy and raise difficulty as you improve.</li>
-                        <li>Use the "New Set" button for a fresh practice round.</li>
-                    </ul>
                 </div>
             </aside>
         </main>
@@ -262,7 +254,7 @@
             panel.innerHTML = '';
             const header = document.createElement('div'); header.className='section-title'; header.innerHTML = `<h2>${SECTIONS[current.section].title}</h2><div class="badge">${current.items.length} problems</div>`;
             panel.appendChild(header);
-            const sub = document.createElement('div'); sub.className='small example'; sub.textContent = 'Solve quickly and press Enter in inputs. Use Reveal to show answers.'; panel.appendChild(sub);
+            const sub = document.createElement('div'); sub.className='small example'; panel.appendChild(sub);
 
             const list = document.createElement('div'); list.id='problems'; list.style.marginTop='12px';
             current.items.forEach((it,idx)=>{
@@ -271,7 +263,7 @@
             });
             panel.appendChild(list);
 
-            const footer = document.createElement('div'); footer.className='footer'; footer.innerHTML = `<div class="meta small">Problems: ${current.items.length}</div><div class="tools"><button id="check" class="btn btn-primary">Check</button><button id="clear" class="btn btn-ghost">Clear</button></div>`;
+            const footer = document.createElement('div'); footer.className='footer'; footer.innerHTML = `<div class="meta small">Prob: ${current.items.length}</div><div class="tools"><button id="check" class="btn btn-primary">Check</button><button id="clear" class="btn btn-ghost">Clear</button></div>`;
             panel.appendChild(footer);
 
             attachListeners();
