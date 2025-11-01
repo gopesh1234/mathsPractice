@@ -1,380 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Daily Math Practice</title>
-    <style>
-        :root{
-            --bg:#0f1724; --card:#0b1220; --muted:#9aa7b2; --accent:#7dd3fc; --accent-2:#60a5fa; --glass: rgba(255,255,255,0.03);
-            --success: #10b981; --danger:#ef4444; --glass-2: rgba(255,255,255,0.02);
-            font-synthesis: none;
-        }
-        html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; background: linear-gradient(180deg,#071029 0%, #071a2b 100%);color:#e6eef6}
-        .container{max-width:1100px;margin:32px auto;padding:24px}
-        header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
-        header h1{font-size:1.35rem;letter-spacing:0.2px;margin:0}
-        header p{margin:0;color:var(--muted);font-size:0.95rem}
-        .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-        @@media (max-width:900px){.grid{grid-template-columns:1fr}}
-        .card{background:linear-gradient(180deg,var(--card),#07101a);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
-        .card h2{margin:0 0 8px 0;font-size:1.05rem}
-        .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-        select,input[type=number],button{background:var(--glass);border:1px solid rgba(255,255,255,0.04);color:inherit;padding:8px 10px;border-radius:8px}
-        .btn{cursor:pointer;padding:8px 12px;border-radius:10px;border:none}
-        .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#002;box-shadow:0 6px 18px rgba(96,165,250,0.12)}
-        .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
-        .problem{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:8px;background:var(--glass-2);margin-bottom:8px}
-        .problem .left{display:flex;gap:12px;align-items:center}
-        .problem .q{font-weight:600;font-size:1.05rem}
-        .problem input{width:50px}
-        .meta{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:0.92rem}
-        .footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:var(--muted)}
-        .score{font-weight:700}
-        .small{font-size:0.85rem;color:var(--muted)}
-        .tools{display:flex;gap:8px;flex-wrap:wrap}
-        .section-title{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-        .hint{font-size:0.9rem;color:var(--muted);margin-top:6px}
-        .badge{background:rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;font-size:0.82rem}
-        .topbar{display:flex;gap:8px;align-items:center}
-        .nav{display:flex;gap:6px;flex-wrap:wrap}
-        .nav button{padding:6px 10px;border-radius:8px}
-        .active{outline:2px solid rgba(125,211,252,0.12);box-shadow:0 6px 20px rgba(0,0,0,0.6)}
-        .level {display:flex; gap:6px}
-        .example{color:var(--muted);font-size:0.92rem;margin-bottom:8px}
-        .kpi{display:flex;gap:10px}
-        .kpi .item{background:var(--glass);padding:10px;border-radius:8px}
-        footer{color:var(--muted);margin-top:30px;text-align:center}
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daily Math Practice</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa7b2;
+      --accent: #7dd3fc;
+      --accent-2: #60a5fa;
+      --glass: rgba(255, 255, 255, 0.03);
+      --success: #10b981;
+      --danger: #ef4444;
+      --glass-2: rgba(255, 255, 255, 0.02);
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #071029 0%, #071a2b 100%);
+      color: #e6eef6;
+    }
+    .container { max-width: 1100px; margin: 32px auto; padding: 24px; }
+    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    header h1 { font-size: 1.35rem; margin: 0; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    @@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      background: linear-gradient(180deg, var(--card), #07101a);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .card h2 { margin: 0 0 8px 0; font-size: 1.05rem; }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    select, button, input[type=range] {
+      background: var(--glass);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: inherit;
+      padding: 8px 10px;
+      border-radius: 8px;
+    }
+    .btn { cursor: pointer; padding: 8px 12px; border-radius: 10px; border: none; transition: 0.2s; }
+    .btn-primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #002;
+      box-shadow: 0 6px 18px rgba(96, 165, 250, 0.12);
+    }
+    .btn-ghost { background: transparent; border: 1px solid rgba(255, 255, 255, 0.04); }
+    .problem {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px; border-radius: 8px; background: var(--glass-2);
+      margin-bottom: 8px; flex-wrap: wrap;
+    }
+    .problem .q { font-weight: 600; font-size: 1.05rem; }
+    .small { font-size: 0.85rem; color: var(--muted); }
+    .nav { display: flex; gap: 6px; flex-wrap: wrap; }
+    .nav button { padding: 6px 10px; border-radius: 8px; }
+    .active { outline: 2px solid rgba(125, 211, 252, 0.12); }
+    footer { color: var(--muted); margin-top: 30px; text-align: center; }
+    .choice.active.correct { background: var(--success)!important; color: #fff; }
+    .choice.active.incorrect { background: var(--danger)!important; color: #fff; }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div>
-                <h1>Daily Maths Practice</h1>
-            </div>
-            <div class="topbar">
-                <div class="kpi">
-                    <div class="item"><div class="small">Today</div><div id="todayScore" class="score">0/0</div></div>
-                </div>
-            </div>
-        </header>
+  <div class="container">
+    <header>
+      <h1>Daily Maths Practice</h1>
+      <div><div class="small">Today</div><div id="todayScore">0/0</div></div>
+    </header>
 
-        <nav class="nav" aria-label="sections">
-            <button class="btn btn-ghost active" data-section="squares">Squares</button>
-            <button class="btn btn-ghost" data-section="sqroot">Square Roots</button>
-            <button class="btn btn-ghost" data-section="cubes">Cubes</button>
-            <button class="btn btn-ghost" data-section="cubert">Cube Roots</button>
-            <button class="btn btn-ghost" data-section="triplets">Triplets</button>
-            <button class="btn btn-ghost" data-section="primes">Primes</button>
-            <button class="btn btn-ghost" data-section="pct2frac">% → Fraction</button>
-            <button class="btn btn-ghost" data-section="frac2pct">Fraction → %</button>
-        </nav>
+    <nav class="nav">
+      <button class="btn btn-ghost active" data-section="squares">Squares</button>
+      <button class="btn btn-ghost" data-section="sqroot">Square Roots</button>
+      <button class="btn btn-ghost" data-section="cubes">Cubes</button>
+      <button class="btn btn-ghost" data-section="cubert">Cube Roots</button>
+      <button class="btn btn-ghost" data-section="triplets">Triplets</button>
+      <button class="btn btn-ghost" data-section="pct2frac">% → Fraction</button>
+      <button class="btn btn-ghost" data-section="frac2pct">Fraction → %</button>
+    </nav>
 
-        <main class="grid" style="margin-top:18px">
-            <section class="card" id="panel">
-                <!-- content injected by JS -->
-            </section>
+    <main class="grid" style="margin-top:18px">
+      <section class="card" id="panel"></section>
+      <aside class="card">
+        <h2>Settings</h2>
+        <div class="controls">
+          <label class="small">Problems
+            <select id="count">
+              <option>5</option><option selected>10</option><option>15</option>
+            </select>
+          </label>
+        </div>
+        <div id="squareRangeBox">
+          <input type="range" id="squareMin" min="0" max="100" value="0">
+          <input type="range" id="squareMax" min="0" max="100" value="20">
+        </div>
+        <div id="cubeRangeBox" class="hidden">
+          <input type="range" id="cubeMin" min="0" max="30" value="0">
+          <input type="range" id="cubeMax" min="0" max="30" value="10">
+        </div>
+        <div class="controls">
+          <button id="newSet" class="btn btn-primary">New Set</button>
+          <button id="reveal" class="btn btn-ghost">Reveal</button>
+        </div>
+      </aside>
+    </main>
 
-            <aside class="card">
-                <h2>Settings</h2>
-                <div class="controls">
-                    <label class="small">Difficulty
-                        <select id="difficulty">
-                            <option value="easy">Easy</option>
-                            <option value="medium" selected>Medium</option>
-                            <option value="hard">Hard</option>
-                        </select>
-                    </label>
-                    <label class="small">Problems
-                        <select id="count">
-                            <option>5</option>
-                            <option selected>10</option>
-                            <option>15</option>
-                            <option>20</option>
-                        </select>
-                    </label>
-                    <button id="newSet" class="btn btn-primary">New Set</button>
-                    <button id="reveal" class="btn btn-ghost">Reveal Answers</button>
-                </div>
-            </aside>
-        </main>
+    <footer>ⓒ Daily Maths Practice — Gopesh</footer>
+  </div>
 
-        <footer>
-            ⓒ Daily Maths Practice — Gopesh.
-        </footer>
-    </div>
+  <script>
+    const panel = document.getElementById("panel");
+    const todayScore = document.getElementById("todayScore");
+    let current = { section: "squares", items: [] };
+    let squareRange = [0, 20], cubeRange = [0, 10];
 
-    <script>
-        // Sections configuration
-        const SECTIONS = {
-            squares: {title:'Squares', gen:genSquares, render:renderSimpleQuestion},
-            sqroot: {title:'Square Roots', gen:genSqRoots, render:renderSimpleQuestion},
-            cubes: {title:'Cubes', gen:genCubes, render:renderSimpleQuestion},
-            cubert: {title:'Cube Roots', gen:genCubeRoots, render:renderSimpleQuestion},
-            triplets: {title:'Pythagorean Triplets', gen:genTriplets, render:renderTriplet},
-            primes: {title:'Prime Numbers', gen:genPrimes, render:renderPrime},
-            pct2frac: {title:'Percentage to Fraction', gen:genPct2Frac, render:renderSimpleQuestion},
-            frac2pct: {title:'Fraction to Percentage', gen:genFrac2Pct, render:renderSimpleQuestion}
-        };
+    const SECTIONS = {
+      squares: { title: "Squares", gen: () => randInt(squareRange[0], squareRange[1]), render: rSimple },
+      sqroot: { title: "Square Roots", gen: () => Math.pow(randInt(2, 12), 2), render: rSimple },
+      cubes: { title: "Cubes", gen: () => randInt(cubeRange[0], cubeRange[1]), render: rSimple },
+      cubert: { title: "Cube Roots", gen: () => Math.pow(randInt(2, 6), 3), render: rSimple },
+      triplets: { title: "Pythagorean Triplets", gen: genTriplet, render: rSimple },
+      pct2frac: { title: "% → Fraction", gen: () => randInt(1, 100), render: rSimple },
+      frac2pct: { title: "Fraction → %", gen: () => ({ num: randInt(1, 9), denom: randInt(2, 10) }), render: rSimple },
+    };
 
-        // helpers
-        function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min}
-        function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+    function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+    function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+    function gcd(a, b) { return b ? gcd(b, a % b) : a; }
 
-        // generators by difficulty
-        function genSquares(difficulty){
-            if(difficulty==='easy') return randInt(2,25);
-            if(difficulty==='medium') return randInt(12,75);
-            return randInt(50,200);
-        }
-        function genSqRoots(difficulty){
-            if(difficulty==='easy') return Math.pow(randInt(2,12),2);
-            if(difficulty==='medium') return Math.pow(randInt(6,18),2);
-            return Math.pow(randInt(10,40),2);
-        }
-        function genCubes(difficulty){
-            if(difficulty==='easy') return randInt(2,6);
-            if(difficulty==='medium') return randInt(5,12);
-            return randInt(10,20);
-        }
-        function genCubeRoots(difficulty){
-            if(difficulty==='easy') return Math.pow(randInt(2,6),3);
-            if(difficulty==='medium') return Math.pow(randInt(4,10),3);
-            return Math.pow(randInt(8,18),3);
-        }
-        function genTriplets(difficulty){
-            // generate primitive triplet then scale
-            function primitive(){
-                let m = randInt(2,8); let n = randInt(1,m-1);
-                if((m-n)%2===0) n = (n+1) % m || 1;
-                const a = m*m - n*n; const b = 2*m*n; const c = m*m + n*n;
-                return [Math.min(a,b),Math.max(a,b),c];
-            }
-            let base = primitive();
-            let scale = difficulty==='easy'?1: difficulty==='medium'?randInt(1,3):randInt(1,6);
-            return base.map(x=>x*scale);
-        }
-        function genPrimes(difficulty){
-            // return a random number and ask if prime
-            if(difficulty==='easy') return randInt(2,50);
-            if(difficulty==='medium') return randInt(50,300);
-            return randInt(300,2000);
-        }
-        function genPct2Frac(difficulty){
-            if(difficulty==='easy') return randInt(1,50);
-            if(difficulty==='medium') return randInt(10,150);
-            return randInt(151,999);
-        }
-        function genFrac2Pct(difficulty){
-            let denom = difficulty==='easy'? [2,4,5,10,25,100][randInt(0,5)]: difficulty==='medium'? randInt(2,50): randInt(2,200);
-            let num = randInt(1,denom-1);
-            return {num,denom};
-        }
+    function genTriplet() {
+      let m = randInt(2, 8), n = randInt(1, m - 1);
+      if ((m - n) % 2 === 0) n = (n + 1) % m || 1;
+      let a = m * m - n * n, b = 2 * m * n, c = m * m + n * n;
+      return [Math.min(a, b), Math.max(a, b), c];
+    }
 
-        // rendering helpers
-        function renderSimpleQuestion(item, index){
-            const value = item.value;
-            const qtext = item.type === 'squares'? `${value} × ${value}` :
-                          item.type === 'sqroot'? `√${value}` :
-                          item.type === 'cubes'? `${value}³` :
-                          item.type === 'cubert'? `∛${value}` :
-                          item.type === 'pct2frac'? `${value}%` :
-                          item.type === 'frac2pct'? `${item.value.num}/${item.value.denom}` :
-                          '';
-            return `
-                <div class="problem" data-index="${index}">
-                    <div class="left"><div class="q">${qtext}</div></div>
-                    <div>
-                        <input type="text" class="ans" placeholder="answer" />
-                    </div>
-                </div>`;
+    function compute(it) {
+      switch (it.type) {
+        case "squares": return it.value * it.value;
+        case "sqroot": return Math.round(Math.sqrt(it.value));
+        case "cubes": return it.value ** 3;
+        case "cubert": return Math.round(Math.cbrt(it.value));
+        case "triplets": return it.value[2];
+        case "pct2frac": {
+          let g = gcd(it.value, 100);
+          return `${it.value / g}/${100 / g}`;
         }
-        function renderTriplet(item,index){
-            const [a,b,c] = item.value;
-            return `
-                <div class="problem" data-index="${index}">
-                    <div class="left"><div class="q">Find the missing member (order any): ${a}, ${b}, ?</div></div>
-                    <div><input type="text" class="ans" placeholder="enter missing" /></div>
-                </div>`;
+        case "frac2pct": {
+          let { num, denom } = it.value;
+          return `${((num / denom) * 100).toFixed(2).replace(/\.00$/, "")}%`;
         }
-        function renderPrime(item,index){
-            return `
-                <div class="problem" data-index="${index}">
-                    <div class="left"><div class="q">Is ${item.value} prime?</div></div>
-                    <div style="display:flex;gap:8px"><button class="btn btn-ghost choice" data-val="yes">Yes</button><button class="btn btn-ghost choice" data-val="no">No</button></div>
-                </div>`;
-        }
+      }
+    }
 
-        // compute answers
-        function computeAnswer(item){
-            switch(item.type){
-                case 'squares': return String(item.value * item.value);
-                case 'sqroot': return String(Math.round(Math.sqrt(item.value)));
-                case 'cubes': return String(item.value * item.value * item.value);
-                case 'cubert': return String(Math.round(Math.cbrt(item.value)));
-                case 'triplets':{
-                    const [a,b,c] = item.value; // missing is c
-                    return String(c);
-                }
-                case 'primes':{
-                    const n = item.value; if(n<2) return 'no';
-                    for(let i=2;i<=Math.floor(Math.sqrt(n));i++) if(n%i===0) return 'no';
-                    return 'yes';
-                }
-                case 'pct2frac':{
-                    const p = item.value; let denom = 100; let num = p; const g = gcd(num,denom); num/=g; denom/=g; return `${num}/${denom}`;
-                }
-                case 'frac2pct':{
-                    const {num,denom} = item.value; return `${((num/denom)*100).toFixed(2).replace(/\.00$/,'')}%`;
-                }
-            }
-        }
-        function gcd(a,b){return b?gcd(b,a%b):a}
+    function genOpts(correct, type) {
+      const val = Number(correct);
+      let s = new Set([String(correct)]);
+      while (s.size < 4) {
+        if (type.includes("square")) s.add(String(val + randInt(-20, 20)));
+        else if (type.includes("cube")) s.add(String(val + randInt(-200, 200)));
+        else if (type === "triplets") s.add(String(val + randInt(-10, 10)));
+        else if (type.includes("frac")) s.add(String(randInt(1, 9) + "/" + randInt(2, 10)));
+        else s.add(String(randInt(1, 100)));
+      }
+      return shuffle([...s]);
+    }
 
-        // build and show set
-        let current = {section:'squares', items:[]};
-        function buildSet(){
-            const sect = current.section; const cfg = SECTIONS[sect];
-            const difficulty = document.getElementById('difficulty').value;
-            const count = parseInt(document.getElementById('count').value);
-            const items = [];
-            for(let i=0;i<count;i++){
-                let val = cfg.gen(difficulty);
-                // unify structure
-                items.push({type:sect, value: val});
-            }
-            current.items = items;
-            renderPanel();
-            saveSession();
-        }
+    function rSimple(it, idx) {
+      let q = {
+        squares: `${it.value} × ${it.value}`,
+        sqroot: `√${it.value}`,
+        cubes: `${it.value}³`,
+        cubert: `∛${it.value}`,
+        triplets: `${it.value[0]}, ${it.value[1]}, ?`,
+        pct2frac: `${it.value}%`,
+        frac2pct: `${it.value.num}/${it.value.denom}`
+      }[it.type];
+      let correct = compute(it);
+      let opts = genOpts(correct, it.type);
+      return `<div class="problem" data-i="${idx}">
+          <div class="q">${q}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            ${opts.map(o => `<button class="btn btn-ghost choice" data-val="${o}">${o}</button>`).join("")}
+          </div>
+        </div>`;
+    }
 
-        function renderPanel(){
-            const panel = document.getElementById('panel');
-            panel.innerHTML = '';
-            const header = document.createElement('div'); header.className='section-title'; header.innerHTML = `<h2>${SECTIONS[current.section].title}</h2><div class="badge">${current.items.length} problems</div>`;
-            panel.appendChild(header);
-            const sub = document.createElement('div'); sub.className='small example'; panel.appendChild(sub);
+    function genSet() {
+      squareRange = [+squareMin.value, +squareMax.value];
+      cubeRange = [+cubeMin.value, +cubeMax.value];
+      let s = current.section, conf = SECTIONS[s];
+      let c = +count.value; current.items = [];
+      for (let i = 0; i < c; i++) current.items.push({ type: s, value: conf.gen() });
+      render();
+    }
 
-            const list = document.createElement('div'); list.id='problems'; list.style.marginTop='12px';
-            current.items.forEach((it,idx)=>{
-                let html = SECTIONS[current.section].render(it,idx);
-                list.insertAdjacentHTML('beforeend',html);
-            });
-            panel.appendChild(list);
-
-            const footer = document.createElement('div'); footer.className='footer'; footer.innerHTML = `<div class="tools"><button id="check" class="btn btn-primary">Check</button><button id="clear" class="btn btn-ghost">Clear</button></div>`;
-            panel.appendChild(footer);
-
-            attachListeners();
-        }
-
-        // attach events
-        function attachListeners(){
-            document.querySelectorAll('#problems .ans').forEach(inp=>{
-                inp.addEventListener('keydown', (e)=>{ if(e.key==='Enter') check(); });
-            });
-            document.querySelectorAll('#problems .choice').forEach(btn=>{
-                btn.addEventListener('click', ()=>{ btn.classList.toggle('active'); });
-            });
-            document.getElementById('check').onclick = check;
-            document.getElementById('clear').onclick = ()=>{ document.querySelectorAll('.ans').forEach(i=>i.value=''); document.querySelectorAll('.choice').forEach(b=>b.classList.remove('active')); };
-        }
-
-        function normalize(str){ return String(str).trim().toLowerCase().replace(/\s+/g,''); }
-
-        function check(){
-            let correct=0; let total=current.items.length;
-            current.items.forEach((it,idx)=>{
-                const ansEl = document.querySelector(`#problems .problem[data-index='${idx}']`);
-                if(!ansEl) return;
-                const input = ansEl.querySelector('.ans');
-                let user;
-                if(it.type==='primes'){
-                    const yes = ansEl.querySelector('.choice.active[data-val="yes"]');
-                    const no = ansEl.querySelector('.choice.active[data-val="no"]');
-                    user = yes? 'yes': no? 'no': '';
-                } else {
-                    user = input? input.value : '';
-                }
-                const expected = computeAnswer(it);
-                if(normalize(user)===normalize(expected)){
-                    ansEl.style.borderLeft = `4px solid ${getComputedStyle(document.documentElement).getPropertyValue('--success')||'#10b981'}`;
-                    correct++;
-                } else {
-                    ansEl.style.borderLeft = `4px solid ${getComputedStyle(document.documentElement).getPropertyValue('--danger')||'#ef4444'}`;
-                }
-            });
-            // update UI and stats
-            document.getElementById('todayScore').textContent = `${correct}/${total}`;
-            saveResult(correct,total);
-        }
-
-        function reveal(){
-            current.items.forEach((it,idx)=>{
-                const el = document.querySelector(`#problems .problem[data-index='${idx}']`);
-                if(!el) return;
-                const expected = computeAnswer(it);
-                const disp = document.createElement('div'); disp.className='small hint'; disp.style.marginTop='6px'; disp.textContent = ' '+expected;
-                el.appendChild(disp);
-            });
-        }
-
-        // storage
-        function saveSession(){
-            localStorage.setItem('dmp_session', JSON.stringify({section:current.section, items:current.items, when:Date.now()}));
-        }
-        function loadSession(){
-            const raw = localStorage.getItem('dmp_session'); if(!raw) return false;
-            try{ const obj = JSON.parse(raw); current.section = obj.section || 'squares'; current.items = obj.items || []; return true; }catch(e){return false;}
-        }
-
-        function saveResult(correct,total){
-            const today = new Date().toISOString().slice(0,10);
-            const raw = localStorage.getItem('dmp_results');
-            const obj = raw? JSON.parse(raw): {};
-            obj[today] = {correct,total};
-            localStorage.setItem('dmp_results', JSON.stringify(obj));
-            // streak logic
-            updateKPIs();
-        }
-        function updateKPIs(){
-            const raw = localStorage.getItem('dmp_results');
-            const obj = raw? JSON.parse(raw): {};
-            const keys = Object.keys(obj).sort().reverse();
-            const today = new Date().toISOString().slice(0,10);
-            const todayVal = obj[today]||{correct:0,total:0};
-            document.getElementById('todayScore').textContent = `${todayVal.correct||0}/${todayVal.total||0}`;
-            // simple streak: consecutive days with at least one correct
-            let streak=0; let d=new Date();
-            for(let i=0;i<365;i++){
-                const key = d.toISOString().slice(0,10);
-                if(obj[key] && obj[key].correct>0) streak++; else break;
-                d.setDate(d.getDate()-1);
-            }
-            document.getElementById('streak').textContent = streak;
-        }
-
-        // nav handlers
-        document.querySelectorAll('.nav button').forEach(btn=>{
-            btn.addEventListener('click', ()=>{
-                document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
-                btn.classList.add('active');
-                current.section = btn.dataset.section;
-                // regenerate set for new section
-                buildSet();
-            });
+    function render() {
+      panel.innerHTML = `<h2>${SECTIONS[current.section].title}</h2><div id="problems"></div>`;
+      const box = document.getElementById("problems");
+      current.items.forEach((it, i) => box.insertAdjacentHTML("beforeend", SECTIONS[current.section].render(it, i)));
+      document.querySelectorAll(".choice").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const par = btn.parentElement.querySelectorAll(".choice");
+          par.forEach(b => b.classList.remove("active", "correct", "incorrect"));
+          btn.classList.add("active");
+          const idx = +btn.closest(".problem").dataset.i;
+          const expected = String(compute(current.items[idx]));
+          if (btn.dataset.val.toLowerCase() === expected.toLowerCase()) btn.classList.add("correct");
+          else btn.classList.add("incorrect");
+          updateScore();
         });
+      });
+    }
 
-        document.getElementById('newSet').addEventListener('click', buildSet);
-        document.getElementById('reveal').addEventListener('click', reveal);
+    function updateScore() {
+      const act = document.querySelectorAll(".choice.active.correct").length;
+      const tot = current.items.length;
+      todayScore.textContent = `${act}/${tot}`;
+    }
 
-        // initialize
-        (function(){
-            if(!loadSession()){ buildSet(); } else renderPanel();
-            updateKPIs();
-        })();
+    document.querySelectorAll(".nav button").forEach(b => {
+      b.onclick = () => {
+        document.querySelectorAll(".nav button").forEach(x => x.classList.remove("active"));
+        b.classList.add("active");
+        current.section = b.dataset.section;
+        toggleRanges();
+        genSet();
+      };
+    });
 
-    </script>
+    function toggleRanges() {
+      const sqBox = document.getElementById("squareRangeBox");
+      const cuBox = document.getElementById("cubeRangeBox");
+      if (["squares", "sqroot"].includes(current.section)) {
+        sqBox.classList.remove("hidden"); cuBox.classList.add("hidden");
+      } else if (["cubes", "cubert"].includes(current.section)) {
+        cuBox.classList.remove("hidden"); sqBox.classList.add("hidden");
+      } else {
+        sqBox.classList.add("hidden"); cuBox.classList.add("hidden");
+      }
+    }
+
+    reveal.onclick = () => {
+      current.items.forEach((it, i) => {
+        const el = document.querySelector(`.problem[data-i="${i}"]`);
+        if (!el.querySelector(".small")) {
+          const exp = compute(it);
+          const show = document.createElement("div");
+          show.className = "small";
+          show.textContent = "Answer: " + exp;
+          el.appendChild(show);
+        }
+      });
+    };
+
+    newSet.onclick = genSet;
+    genSet();
+  </script>
 </body>
 </html>
