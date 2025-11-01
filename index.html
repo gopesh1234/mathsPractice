@@ -263,7 +263,7 @@
             });
             panel.appendChild(list);
 
-            const footer = document.createElement('div'); footer.className='footer'; footer.innerHTML = `<div class="meta small">Prob: ${current.items.length}</div><div class="tools"><button id="check" class="btn btn-primary">Check</button><button id="clear" class="btn btn-ghost">Clear</button></div>`;
+            const footer = document.createElement('div'); footer.className='footer'; footer.innerHTML = `<div class="tools"><button id="check" class="btn btn-primary">Check</button><button id="clear" class="btn btn-ghost">Clear</button></div>`;
             panel.appendChild(footer);
 
             attachListeners();
@@ -315,7 +315,7 @@
                 const el = document.querySelector(`#problems .problem[data-index='${idx}']`);
                 if(!el) return;
                 const expected = computeAnswer(it);
-                const disp = document.createElement('div'); disp.className='small hint'; disp.style.marginTop='6px'; disp.textContent = 'Answer: '+expected;
+                const disp = document.createElement('div'); disp.className='small hint'; disp.style.marginTop='6px'; disp.textContent = ' '+expected;
                 el.appendChild(disp);
             });
         }
