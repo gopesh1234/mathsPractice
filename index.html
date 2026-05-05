@@ -1,266 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Daily Math Practice</title>
-  <style>
-    :root {
-      --bg: #0f1724;
-      --card: #0b1220;
-      --muted: #9aa7b2;
-      --accent: #7dd3fc;
-      --accent-2: #60a5fa;
-      --glass: rgba(255, 255, 255, 0.03);
-      --success: #10b981;
-      --danger: #ef4444;
-      --glass-2: rgba(255, 255, 255, 0.02);
-    }
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg, #071029 0%, #071a2b 100%);
-      color: #e6eef6;
-    }
-    .container { max-width: 1100px; margin: 32px auto; padding: 24px; }
-    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-    header h1 { font-size: 1.35rem; margin: 0; }
-    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    @@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-    .card {
-      background: linear-gradient(180deg, var(--card), #07101a);
-      border-radius: 12px;
-      padding: 18px;
-      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.03);
-    }
-    .card h2 { margin: 0 0 8px 0; font-size: 1.05rem; }
-    .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-    select, button, input[type=range] {
-      background: var(--glass);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      color: inherit;
-      padding: 8px 10px;
-      border-radius: 8px;
-    }
-    .btn { cursor: pointer; padding: 8px 12px; border-radius: 10px; border: none; transition: 0.2s; }
-    .btn-primary {
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      color: #002;
-      box-shadow: 0 6px 18px rgba(96, 165, 250, 0.12);
-    }
-    .btn-ghost { background: transparent; border: 1px solid rgba(255, 255, 255, 0.04); }
-    .problem {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px; border-radius: 8px; background: var(--glass-2);
-      margin-bottom: 8px; flex-wrap: wrap;
-    }
-    .problem .q { font-weight: 600; font-size: 1.05rem; }
-    .small { font-size: 0.85rem; color: var(--muted); }
-    .nav { display: flex; gap: 6px; flex-wrap: wrap; }
-    .nav button { padding: 6px 10px; border-radius: 8px; }
-    .active { outline: 2px solid rgba(125, 211, 252, 0.12); }
-    footer { color: var(--muted); margin-top: 30px; text-align: center; }
-    .choice.active.correct { background: var(--success)!important; color: #fff; }
-    .choice.active.incorrect { background: var(--danger)!important; color: #fff; }
-    .hidden { display: none; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Daily Maths Practice</h1>
-      <div><div class="small">Today</div><div id="todayScore">0/0</div></div>
-    </header>
+<h1>📷 Paste or Drag Images (Multiple Supported)</h1>
 
-    <nav class="nav">
-      <button class="btn btn-ghost active" data-section="squares">Squares</button>
-      <button class="btn btn-ghost" data-section="sqroot">Square Roots</button>
-      <button class="btn btn-ghost" data-section="cubes">Cubes</button>
-      <button class="btn btn-ghost" data-section="cubert">Cube Roots</button>
-      <button class="btn btn-ghost" data-section="triplets">Triplets</button>
-      <button class="btn btn-ghost" data-section="pct2frac">% → Fraction</button>
-      <button class="btn btn-ghost" data-section="frac2pct">Fraction → %</button>
-    </nav>
-    <main class="grid" style="margin-top:18px;">
-      <aside class="card">
-        <h2>Settings</h2>
-        <div class="controls">
-          <label class="small">Problems
-            <select id="count">
-              <option>5</option><option selected>10</option><option>15</option>
-            </select>
-          </label>
-        </div>
-        <div id="squareRangeBox">
-          <input type="range" id="squareMin" min="0" max="100" value="0">
-          <input type="range" id="squareMax" min="0" max="100" value="20">
-        </div>
-        <div id="cubeRangeBox" class="hidden">
-          <input type="range" id="cubeMin" min="0" max="30" value="0">
-          <input type="range" id="cubeMax" min="0" max="30" value="10">
-        </div>
-        <div class="controls">
-          <button id="newSet" class="btn btn-primary">New Set</button>
-          <button id="reveal" class="btn btn-ghost">Reveal</button>
-        </div>
-      </aside>
-    </main>
-        <aside class="card">
-            <section class="card" id="panel"></section>
-        </aside>
-    <footer>ⓒ Daily Maths Practice — Gopesh</footer>
-  </div>
+<div id="dropArea" style="border:2px dashed #999; padding:30px; text-align:center;">
+    👉 Paste (Ctrl + V) or Drag & Drop Images Here
+</div>
 
-  <script>
-    const panel = document.getElementById("panel");
-    const todayScore = document.getElementById("todayScore");
-    let current = { section: "squares", items: [] };
-    let squareRange = [0, 20], cubeRange = [0, 10];
+<br />
 
-    const SECTIONS = {
-      squares: { title: "Squares", gen: () => randInt(squareRange[0], squareRange[1]), render: rSimple },
-      sqroot: { title: "Square Roots", gen: () => Math.pow(randInt(2, 12), 2), render: rSimple },
-      cubes: { title: "Cubes", gen: () => randInt(cubeRange[0], cubeRange[1]), render: rSimple },
-      cubert: { title: "Cube Roots", gen: () => Math.pow(randInt(2, 6), 3), render: rSimple },
-      triplets: { title: "Pythagorean Triplets", gen: genTriplet, render: rSimple },
-      pct2frac: { title: "% → Fraction", gen: () => randInt(1, 100), render: rSimple },
-      frac2pct: { title: "Fraction → %", gen: () => ({ num: randInt(1, 9), denom: randInt(2, 10) }), render: rSimple },
-    };
+<div id="previewContainer"></div>
 
-    function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
-    function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-    function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+<br />
 
-    function genTriplet() {
-      let m = randInt(2, 8), n = randInt(1, m - 1);
-      if ((m - n) % 2 === 0) n = (n + 1) % m || 1;
-      let a = m * m - n * n, b = 2 * m * n, c = m * m + n * n;
-      return [Math.min(a, b), Math.max(a, b), c];
-    }
+<button onclick="extractAll()">Extract Text From All</button>
 
-    function compute(it) {
-      switch (it.type) {
-        case "squares": return it.value * it.value;
-        case "sqroot": return Math.round(Math.sqrt(it.value));
-        case "cubes": return it.value ** 3;
-        case "cubert": return Math.round(Math.cbrt(it.value));
-        case "triplets": return it.value[2];
-        case "pct2frac": {
-          let g = gcd(it.value, 100);
-          return `${it.value / g}/${100 / g}`;
+<p><b>Status:</b> <span id="status"></span></p>
+
+<textarea id="output" rows="15" style="width:100%;"></textarea>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+
+<script>
+    let images = [];
+
+    // 📋 Paste multiple images
+    document.addEventListener('paste', function (event) {
+        const items = event.clipboardData.items;
+
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") !== -1) {
+                const file = items[i].getAsFile();
+                addImage(file);
+            }
         }
-        case "frac2pct": {
-          let { num, denom } = it.value;
-          return `${((num / denom) * 100).toFixed(2).replace(/\.00$/, "")}%`;
-        }
-      }
-    }
-
-    function genOpts(correct, type) {
-      const val = Number(correct);
-      let s = new Set([String(correct)]);
-      while (s.size < 4) {
-        if (type.includes("square")) s.add(String(val + randInt(-20, 20)));
-        else if (type.includes("cube")) s.add(String(val + randInt(-200, 200)));
-        else if (type === "triplets") s.add(String(val + randInt(-10, 10)));
-        else if (type.includes("frac")) s.add(String(randInt(1, 9) + "/" + randInt(2, 10)));
-        else s.add(String(randInt(1, 100)));
-      }
-      return shuffle([...s]);
-    }
-
-    function rSimple(it, idx) {
-      let q = {
-        squares: `${it.value} × ${it.value}`,
-        sqroot: `√${it.value}`,
-        cubes: `${it.value}³`,
-        cubert: `∛${it.value}`,
-        triplets: `${it.value[0]}, ${it.value[1]}, ?`,
-        pct2frac: `${it.value}%`,
-        frac2pct: `${it.value.num}/${it.value.denom}`
-      }[it.type];
-      let correct = compute(it);
-      let opts = genOpts(correct, it.type);
-      return `<div class="problem" data-i="${idx}">
-          <div class="q">${q}</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            ${opts.map(o => `<button class="btn btn-ghost choice" data-val="${o}">${o}</button>`).join("")}
-          </div>
-        </div>`;
-    }
-
-    function genSet() {
-      squareRange = [+squareMin.value, +squareMax.value];
-      cubeRange = [+cubeMin.value, +cubeMax.value];
-      let s = current.section, conf = SECTIONS[s];
-      let c = +count.value; current.items = [];
-      for (let i = 0; i < c; i++) current.items.push({ type: s, value: conf.gen() });
-      render();
-    }
-
-    function render() {
-      panel.innerHTML = `<h2>${SECTIONS[current.section].title}</h2><div id="problems"></div>`;
-      const box = document.getElementById("problems");
-      current.items.forEach((it, i) => box.insertAdjacentHTML("beforeend", SECTIONS[current.section].render(it, i)));
-      document.querySelectorAll(".choice").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const par = btn.parentElement.querySelectorAll(".choice");
-          par.forEach(b => b.classList.remove("active", "correct", "incorrect"));
-          btn.classList.add("active");
-          const idx = +btn.closest(".problem").dataset.i;
-          const expected = String(compute(current.items[idx]));
-          if (btn.dataset.val.toLowerCase() === expected.toLowerCase()) btn.classList.add("correct");
-          else btn.classList.add("incorrect");
-          updateScore();
-        });
-      });
-    }
-
-    function updateScore() {
-      const act = document.querySelectorAll(".choice.active.correct").length;
-      const tot = current.items.length;
-      todayScore.textContent = `${act}/${tot}`;
-    }
-
-    document.querySelectorAll(".nav button").forEach(b => {
-      b.onclick = () => {
-        document.querySelectorAll(".nav button").forEach(x => x.classList.remove("active"));
-        b.classList.add("active");
-        current.section = b.dataset.section;
-        toggleRanges();
-        genSet();
-      };
     });
 
-    function toggleRanges() {
-      const sqBox = document.getElementById("squareRangeBox");
-      const cuBox = document.getElementById("cubeRangeBox");
-      if (["squares", "sqroot"].includes(current.section)) {
-        sqBox.classList.remove("hidden"); cuBox.classList.add("hidden");
-      } else if (["cubes", "cubert"].includes(current.section)) {
-        cuBox.classList.remove("hidden"); sqBox.classList.add("hidden");
-      } else {
-        sqBox.classList.add("hidden"); cuBox.classList.add("hidden");
-      }
+    // 🖱️ Drag & Drop multiple
+    const dropArea = document.getElementById("dropArea");
+
+    dropArea.addEventListener("dragover", e => e.preventDefault());
+
+    dropArea.addEventListener("drop", e => {
+        e.preventDefault();
+
+        const files = e.dataTransfer.files;
+
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].type.startsWith("image/")) {
+                addImage(files[i]);
+            }
+        }
+    });
+
+    // ➕ Add image + preview
+    function addImage(file) {
+        images.push(file);
+
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        img.width = 150;
+        img.style.margin = "10px";
+
+        document.getElementById("previewContainer").appendChild(img);
     }
 
-    reveal.onclick = () => {
-      current.items.forEach((it, i) => {
-        const el = document.querySelector(`.problem[data-i="${i}"]`);
-        if (!el.querySelector(".small")) {
-          const exp = compute(it);
-          const show = document.createElement("div");
-          show.className = "small";
-          show.textContent = "Answer: " + exp;
-          el.appendChild(show);
+    // 🚀 OCR All Images
+    async function extractAll() {
+        if (images.length === 0) {
+            alert("Paste or drop images first!");
+            return;
         }
-      });
-    };
 
-    newSet.onclick = genSet;
-    genSet();
-  </script>
-</body>
-</html>
+        let finalText = "";
+
+        for (let i = 0; i < images.length; i++) {
+            document.getElementById("status").innerText =
+                "Processing Image " + (i + 1) + " / " + images.length;
+
+            const result = await Tesseract.recognize(
+                images[i],
+                'eng',
+                {
+                    logger: m => {
+                        if (m.status === "recognizing text") {
+                            document.getElementById("status").innerText =
+                                `Image ${i + 1}: ${Math.round(m.progress * 100)}%`;
+                        }
+                    }
+                }
+            );
+
+            finalText += "\n\n--- Image " + (i + 1) + " ---\n";
+            finalText += result.data.text;
+        }
+
+        document.getElementById("output").value = finalText;
+        document.getElementById("status").innerText = "Done ✅";
+    }
+</script>
