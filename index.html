@@ -1,98 +1,443 @@
-<h1>📷 Paste or Drag Images (Multiple Supported)</h1>
-
-<div id="dropArea" style="border:2px dashed #999; padding:30px; text-align:center;">
-    👉 Paste (Ctrl + V) or Drag & Drop Images Here
-</div>
-
-<br />
-
-<div id="previewContainer"></div>
-
-<br />
-
-<button onclick="extractAll()">Extract Text From All</button>
-
-<p><b>Status:</b> <span id="status"></span></p>
-
-<textarea id="output" rows="15" style="width:100%;"></textarea>
-
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-
-<script>
-    let images = [];
-
-    // 📋 Paste multiple images
-    document.addEventListener('paste', function (event) {
-        const items = event.clipboardData.items;
-
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].type.indexOf("image") !== -1) {
-                const file = items[i].getAsFile();
-                addImage(file);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add a Test</title>
+    <style>
+            :root {
+                --paper: #f6f1e7;
+                --card: #fffefa;
+                --ink: #24231f;
+                --muted: #77766f;
+                --line: #dedbd1;
+                --red: #a94e3f;
+                --green: #dceee4;
+                --green-ink: #316c4d;
+                --shadow: 0 8px 28px rgba(49, 43, 29, .06);
             }
-        }
-    });
-
-    // 🖱️ Drag & Drop multiple
-    const dropArea = document.getElementById("dropArea");
-
-    dropArea.addEventListener("dragover", e => e.preventDefault());
-
-    dropArea.addEventListener("drop", e => {
-        e.preventDefault();
-
-        const files = e.dataTransfer.files;
-
-        for (let i = 0; i < files.length; i++) {
-            if (files[i].type.startsWith("image/")) {
-                addImage(files[i]);
+            * { box-sizing: border-box; }
+            body {
+                margin: 0;
+                background: var(--paper);
+                color: var(--ink);
+                font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
             }
-        }
-    });
+            .page { max-width: 1120px; margin: 0 auto; padding: 42px 24px 70px; }
+            .eyebrow { color: #858176; font-size: 13px; letter-spacing: .02em; margin-bottom: 8px; }
+            h1 { margin: 0 0 24px; font-family: Georgia, serif; font-size: clamp(34px, 5vw, 48px); letter-spacing: -.04em; }
+            h1 em { color: var(--red); font-weight: 600; }
+            .test-types { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+            .type-btn {
+                text-align: left; padding: 15px 16px; border: 1px solid var(--line); border-radius: 13px;
+                background: var(--card); color: var(--ink); cursor: pointer; transition: .18s ease;
+            }
+            .type-btn strong { display: block; font-size: 14px; margin-bottom: 5px; }
+            .type-btn span { color: var(--muted); font-size: 11px; }
+            .type-btn.active { background: #22221e; color: white; border-color: #22221e; }
+            .type-btn.active span { color: #d2d0c8; }
+            .panel { background: rgba(255,255,252,.88); border: 1px solid var(--line); border-radius: 17px; padding: 18px; box-shadow: var(--shadow); margin-bottom: 16px; }
+            .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+            label { display: block; color: #65645e; font-size: 12px; font-weight: 650; margin-bottom: 7px; }
+            input, select, textarea {
+                width: 100%; min-width: 0; border: 1px solid #d9d7ce; border-radius: 999px; padding: 12px 14px;
+                background: #fff; color: var(--ink); font: inherit; font-size: 14px; outline: none;
+                transition: border .15s, box-shadow .15s;
+            }
+            input:focus, select:focus, textarea:focus { border-color: #a9786e; box-shadow: 0 0 0 3px rgba(169,78,63,.09); }
+            textarea { border-radius: 12px; resize: vertical; min-height: 78px; }
+            .notes-label { margin-bottom: 8px; }
+            .mock-panel { padding: 8px; border: 1.5px solid #bdb9ad; }
+            .mock-inner { border: 1px solid #d6d2c7; border-radius: 13px; padding: 16px; }
+            .mock-heading { display: grid; grid-template-columns: 1fr 180px; gap: 10px; margin-bottom: 14px; }
+            .table-wrap { overflow-x: auto; }
+            table { width: 100%; border-collapse: collapse; min-width: 720px; }
+            th { color: #77766f; text-align: center; font-size: 10px; letter-spacing: .04em; font-weight: 750; padding: 0 6px 10px; }
+            th:first-child { text-align: left; width: 42%; padding-left: 0; }
+            td { border-top: 1px solid #e5e2d9; padding: 8px 6px; text-align: center; font-size: 13px; }
+            td:first-child { text-align: left; padding-left: 0; font-weight: 700; white-space: nowrap; }
+            .section-name { display: flex; align-items: center; gap: 9px; }
+            .section-dot { width: 4px; height: 18px; border-radius: 5px; flex: 0 0 auto; }
+            .section-input { width: 64px; padding: 8px 6px; text-align: center; border-radius: 999px; }
+            .section-input.minutes { width: 66px; }
+            .derived { color: #68675f; font-variant-numeric: tabular-nums; }
+            .score { font-weight: 800; white-space: nowrap; }
+            .accuracy { font-weight: 700; }
+            .proof-row { border-top: 1px solid #e5e2d9; margin-top: 9px; padding-top: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+            .upload-label { display: inline-flex; align-items: center; gap: 7px; border: 1px dashed #c9c5ba; border-radius: 999px; padding: 8px 12px; cursor: pointer; font-size: 12px; color: #55544e; }
+            .upload-label input { display: none; }
+            .file-name { color: var(--muted); font-size: 11px; }
+            .bottom-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 15px; }
+            .total { font-size: 20px; font-weight: 850; letter-spacing: -.03em; }
+            .total small { color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: 0; }
+            .chips { display: flex; gap: 7px; flex-wrap: wrap; }
+            .chip { background: var(--green); color: var(--green-ink); border-radius: 999px; padding: 7px 11px; font-size: 11px; font-weight: 700; }
+            .chip.off { background: #eeeae1; color: #77736a; }
+            .actions { display: flex; gap: 8px; margin-left: auto; }
+            button, .btn {
+                border: 1px solid #d8d4ca; border-radius: 999px; padding: 10px 16px; background: white;
+                color: var(--ink); font-weight: 700; cursor: pointer; font-size: 12px;
+            }
+            button:hover, .btn:hover { transform: translateY(-1px); }
+            .primary { background: #22221e; color: white; border-color: #22221e; }
+            .danger { color: #a23f34; }
+            .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin: 20px 0 10px; }
+            .toolbar h2 { font: 700 19px Georgia, serif; margin: 0; }
+            .toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+            .saved-list { display: grid; gap: 9px; }
+            .saved-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: rgba(255,255,252,.8); border: 1px solid var(--line); border-radius: 13px; padding: 12px 14px; }
+            .saved-item strong { display: block; font-size: 13px; }
+            .saved-item small { color: var(--muted); }
+            .saved-actions { display: flex; gap: 6px; }
+            .empty { color: var(--muted); font-size: 13px; padding: 16px; text-align: center; border: 1px dashed var(--line); border-radius: 12px; }
+            .hint { color: var(--muted); font-size: 11px; margin-top: 8px; }
+            .optional-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; color: var(--muted); font-size: 12px; }
+            .optional-row input { width: auto; }
+            .hidden { display: none !important; }
+            @@media (max-width: 760px) {
+                .page { padding: 25px 13px 45px; }
+                .test-types { grid-template-columns: repeat(2, 1fr); }
+                .meta-grid { grid-template-columns: 1fr; }
+                .mock-heading { grid-template-columns: 1fr; }
+                .mock-inner { padding: 11px; }
+                .bottom-bar { align-items: flex-start; }
+                .actions { width: 100%; margin-left: 0; }
+                .actions button { flex: 1; }
+                .saved-item { align-items: flex-start; }
+            }
+            @@media (max-width: 390px) {
+                .type-btn { padding: 12px 10px; }
+                .type-btn strong { font-size: 12px; }
+                .type-btn span { font-size: 10px; }
+            }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="eyebrow">Any test series · any test type</div>
+        <h1>Add a test <em>2 minutes.</em></h1>
 
-    // ➕ Add image + preview
-    function addImage(file) {
-        images.push(file);
+        <div class="test-types" id="testTypes">
+            <button type="button" class="type-btn active" data-type="Full Test"><strong>Full Test</strong><span>Complete paper · 150 Q · 2h 15m</span></button>
+            <button type="button" class="type-btn" data-type="Sectional Test"><strong>Sectional Test</strong><span>One module on its own timer</span></button>
+            <button type="button" class="type-btn" data-type="Topic Test"><strong>Topic Test</strong><span>Practice set on one topic</span></button>
+            <button type="button" class="type-btn" data-type="Previous Year Paper"><strong>Previous Year Paper</strong><span>Actual SSC CGL Mains paper</span></button>
+        </div>
 
-        const img = document.createElement("img");
-        img.src = URL.createObjectURL(file);
-        img.width = 150;
-        img.style.margin = "10px";
+        <form id="testForm">
+            <div class="panel">
+                <div class="meta-grid">
+                    <div><label for="testDate">▦ &nbsp;Test date</label><input id="testDate" type="date" required /></div>
+                    <div><label for="rank">♙ &nbsp;Your rank on platform (optional)</label><input id="rank" type="number" min="1" placeholder="e.g. 812" /></div>
+                    <div><label for="candidates">♧ &nbsp;Total candidates (optional)</label><input id="candidates" type="number" min="1" placeholder="e.g. 23500" /></div>
+                </div>
+            </div>
 
-        document.getElementById("previewContainer").appendChild(img);
-    }
+            <div class="panel">
+                <label class="notes-label" for="notes">▤ &nbsp;Notes for yourself (optional)</label>
+                <textarea id="notes" placeholder="What went wrong / right — e.g. spent too long on DI, guessed 6 in GA"></textarea>
+            </div>
 
-    // 🚀 OCR All Images
-    async function extractAll() {
-        if (images.length === 0) {
-            alert("Paste or drop images first!");
-            return;
-        }
+            <div class="panel mock-panel">
+                <div class="mock-inner">
+                    <div class="mock-heading">
+                        <input id="mockName" type="text" value="Full Mock #1" aria-label="Test name" />
+                        <select id="platform" aria-label="Test platform">
+                            <option>Oliveboard</option>
+                            <option>Testbook</option>
+                            <option>Adda247</option>
+                            <option>PracticeMock</option>
+                            <option>Career Power</option>
+                            <option>Self Practice</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
 
-        let finalText = "";
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>SECTION</th><th>QS</th><th>CORRECT</th><th>WRONG</th><th>LEFT</th><th>MIN</th><th>SCORE</th><th>ACC</th></tr>
+                            </thead>
+                            <tbody id="sectionRows"></tbody>
+                        </table>
+                    </div>
 
-        for (let i = 0; i < images.length; i++) {
-            document.getElementById("status").innerText =
-                "Processing Image " + (i + 1) + " / " + images.length;
+                    <div class="proof-row">
+                        <span style="font-size:12px;color:#77766f;font-weight:650">Proof</span>
+                        <label class="upload-label">📎 Upload scorecard<input type="file" id="proofFile" accept="image/*,.pdf" /></label>
+                        <span class="file-name" id="proofName">No file selected</span>
+                    </div>
 
-            const result = await Tesseract.recognize(
-                images[i],
-                'eng',
-                {
-                    logger: m => {
-                        if (m.status === "recognizing text") {
-                            document.getElementById("status").innerText =
-                                `Image ${i + 1}: ${Math.round(m.progress * 100)}%`;
-                        }
-                    }
+                    <div class="optional-row">
+                        <input type="checkbox" id="includeComputer" />
+                        <label for="includeComputer" style="margin:0">Include Computer Knowledge in overall score (optional)</label>
+                    </div>
+
+                    <div class="bottom-bar">
+                        <div class="total" id="overallTotal">279<small> / 390 · 85% · 117 att.</small></div>
+                        <div class="chips">
+                            <span class="chip">✓ Sec I</span><span class="chip">✓ Sec II</span><span class="chip" id="computerChip">✓ Computer excluded</span>
+                        </div>
+                        <div class="actions">
+                            <button type="button" id="resetBtn">Reset</button>
+                            <button type="submit" class="primary">✓ Save test</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="toolbar">
+            <h2>Saved tests <span id="savedCount" style="color:#999;font:500 12px system-ui">(0)</span></h2>
+            <div class="toolbar-actions">
+                <button type="button" id="exportBtn">↓ Export JSON</button>
+                <button type="button" id="importBtn">↑ Import JSON</button>
+                <input type="file" id="importFile" accept=".json,application/json" class="hidden" />
+            </div>
+        </div>
+        <div id="savedList" class="saved-list"><div class="empty">Your saved tests will appear here.</div></div>
+        <div class="hint">Data is stored in this browser tab's session storage. Export JSON regularly if you want a backup or want to move your records to another device.</div>
+    </div>
+
+    <script>
+            (() => {
+                "use strict";
+
+                const STORAGE_KEY = "sscTestTracker_session_v1";
+                const sectionConfig = [
+                    { id: "math", name: "Mathematical Abilities", qs: 30, color: "#b75c50", marks: 90 },
+                    { id: "reason", name: "Reasoning & General Intelligence", qs: 30, color: "#496c9d", marks: 90 },
+                    { id: "english", name: "English Language & Comprehension", qs: 45, color: "#4c8068", marks: 135 },
+                    { id: "ga", name: "General Awareness", qs: 25, color: "#bd9b48", marks: 75 },
+                    { id: "computer", name: "Computer Knowledge Test", qs: 20, color: "#77766f", marks: 60, optional: true }
+                ];
+
+                let savedTests = loadData();
+                let selectedType = "Full Test";
+                let editingId = null;
+
+                const $ = id => document.getElementById(id);
+                const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+                function loadData() {
+                    try {
+                        const parsed = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
+                        return Array.isArray(parsed) ? parsed : [];
+                    } catch { return []; }
                 }
-            );
 
-            finalText += "\n\n--- Image " + (i + 1) + " ---\n";
-            finalText += result.data.text;
-        }
+                function persist() {
+                    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(savedTests));
+                    renderSaved();
+                }
 
-        document.getElementById("output").value = finalText;
-        document.getElementById("status").innerText = "Done ✅";
-    }
-</script>
+                function renderRows() {
+                    $("sectionRows").innerHTML = sectionConfig.map(s => `
+                        <tr data-section="${s.id}">
+                            <td><span class="section-name"><i class="section-dot" style="background:${s.color}"></i>${s.name}</span></td>
+                            <td><input class="section-input qs" type="number" min="0" max="300" value="${s.qs}" aria-label="${s.name} total questions"></td>
+                            <td><input class="section-input correct" type="number" min="0" value="${s.id === "math" ? 24 : s.id === "reason" ? 26 : s.id === "english" ? 33 : s.id === "ga" ? 16 : 14}" aria-label="${s.name} correct"></td>
+                            <td><input class="section-input wrong" type="number" min="0" value="${s.id === "math" ? 4 : s.id === "reason" ? 2 : s.id === "english" ? 7 : s.id === "ga" ? 5 : 3}" aria-label="${s.name} wrong"></td>
+                            <td class="derived left">2</td>
+                            <td><input class="section-input minutes" type="number" min="0" value="${s.id === "math" ? 28 : s.id === "reason" ? 27 : s.id === "english" ? 38 : s.id === "ga" ? 17 : 13}" aria-label="${s.name} minutes"></td>
+                            <td class="score section-score">68/${s.marks}</td>
+                            <td class="accuracy section-accuracy">86%</td>
+                        </tr>`).join("");
+                    $("sectionRows").querySelectorAll("input").forEach(input => input.addEventListener("input", calculate));
+                    calculate();
+                }
+
+                function rowValues(row) {
+                    const qs = Math.max(0, Number(row.querySelector(".qs").value) || 0);
+                    const correct = Math.max(0, Number(row.querySelector(".correct").value) || 0);
+                    const wrong = Math.max(0, Number(row.querySelector(".wrong").value) || 0);
+                    const left = qs - correct - wrong;
+                    const score = correct * 3 - wrong;
+                    const accuracy = correct + wrong > 0 ? Math.round(correct / (correct + wrong) * 100) : 0;
+                    const maxMarks = qs * 3;
+                    return { qs, correct, wrong, left, minutes: Math.max(0, Number(row.querySelector(".minutes").value) || 0), score, maxMarks, accuracy };
+                }
+
+                function calculate() {
+                    let totalScore = 0, totalMax = 0, attempted = 0;
+                    const includeComputer = $("includeComputer").checked;
+                    document.querySelectorAll("#sectionRows tr").forEach(row => {
+                        const v = rowValues(row);
+                        row.querySelector(".left").textContent = v.left >= 0 ? v.left : "Check Qs";
+                        row.querySelector(".section-score").textContent = `${v.score}/${v.maxMarks}`;
+                        row.querySelector(".section-accuracy").textContent = `${v.accuracy}%`;
+                        const isComputer = row.dataset.section === "computer";
+                        if (!isComputer || includeComputer) {
+                            totalScore += v.score;
+                            totalMax += v.maxMarks;
+                            attempted += v.correct + v.wrong;
+                        }
+                    });
+                    const percent = totalMax ? Math.round(totalScore / totalMax * 100) : 0;
+                    $("overallTotal").innerHTML = `${totalScore}<small> / ${totalMax} · ${percent}% · ${attempted} att.</small>`;
+                    $("computerChip").textContent = includeComputer ? "✓ Computer included" : "✓ Computer excluded";
+                    $("computerChip").classList.toggle("off", !includeComputer);
+                }
+
+                function collectForm() {
+                    const sections = {};
+                    document.querySelectorAll("#sectionRows tr").forEach(row => sections[row.dataset.section] = rowValues(row));
+                    const includeComputer = $("includeComputer").checked;
+                    const used = sectionConfig.filter(s => !s.optional || includeComputer);
+                    const score = used.reduce((sum, s) => sum + sections[s.id].score, 0);
+                    const maxMarks = used.reduce((sum, s) => sum + sections[s.id].maxMarks, 0);
+                    const attempted = used.reduce((sum, s) => sum + sections[s.id].correct + sections[s.id].wrong, 0);
+                    return {
+                        id: editingId || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
+                        type: selectedType,
+                        date: $("testDate").value,
+                        rank: $("rank").value,
+                        candidates: $("candidates").value,
+                        notes: $("notes").value,
+                        name: $("mockName").value.trim() || "Untitled test",
+                        platform: $("platform").value,
+                        includeComputer,
+                        sections,
+                        totalScore: score,
+                        totalMax: maxMarks,
+                        percentage: maxMarks ? Math.round(score / maxMarks * 100) : 0,
+                        attempted,
+                        updatedAt: new Date().toISOString()
+                    };
+                }
+
+                function fillForm(test) {
+                    editingId = test.id;
+                    selectedType = test.type || "Full Test";
+                    document.querySelectorAll(".type-btn").forEach(b => b.classList.toggle("active", b.dataset.type === selectedType));
+                    $("testDate").value = test.date || "";
+                    $("rank").value = test.rank || "";
+                    $("candidates").value = test.candidates || "";
+                    $("notes").value = test.notes || "";
+                    $("mockName").value = test.name || "Untitled test";
+                    $("platform").value = test.platform || "Oliveboard";
+                    $("includeComputer").checked = !!test.includeComputer;
+                    document.querySelectorAll("#sectionRows tr").forEach(row => {
+                        const v = test.sections?.[row.dataset.section];
+                        if (!v) return;
+                        row.querySelector(".qs").value = v.qs;
+                        row.querySelector(".correct").value = v.correct;
+                        row.querySelector(".wrong").value = v.wrong;
+                        row.querySelector(".minutes").value = v.minutes;
+                    });
+                    calculate();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+
+                function clearForm() {
+                    editingId = null;
+                    $("testForm").reset();
+                    $("testDate").value = new Date().toISOString().slice(0, 10);
+                    $("mockName").value = `Full Mock #${savedTests.length + 1}`;
+                    selectedType = "Full Test";
+                    document.querySelectorAll(".type-btn").forEach(b => b.classList.toggle("active", b.dataset.type === selectedType));
+                    $("proofName").textContent = "No file selected";
+                    renderRows();
+                }
+
+                function renderSaved() {
+                    $("savedCount").textContent = `(${savedTests.length})`;
+                    if (!savedTests.length) {
+                        $("savedList").innerHTML = '<div class="empty">Your saved tests will appear here.</div>';
+                        return;
+                    }
+                    $("savedList").innerHTML = [...savedTests].sort((a,b) => (b.date || "").localeCompare(a.date || "")).map(test => `
+                        <div class="saved-item">
+                            <div><strong>${escapeHtml(test.name)} · ${escapeHtml(test.type)}</strong>
+                            <small>${escapeHtml(test.date || "No date")} · ${escapeHtml(test.platform || "")} · ${test.totalScore}/${test.totalMax} (${test.percentage}%) · Rank ${escapeHtml(test.rank || "—")}</small></div>
+                            <div class="saved-actions">
+                                <button type="button" data-edit="${escapeHtml(test.id)}">Edit</button>
+                                <button type="button" class="danger" data-delete="${escapeHtml(test.id)}">Delete</button>
+                            </div>
+                        </div>`).join("");
+                    $("savedList").querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => {
+                        const test = savedTests.find(t => t.id === btn.dataset.edit);
+                        if (test) fillForm(test);
+                    }));
+                    $("savedList").querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", () => {
+                        if (!confirm("Delete this saved test?")) return;
+                        savedTests = savedTests.filter(t => t.id !== btn.dataset.delete);
+                        persist();
+                    }));
+                }
+
+                document.querySelectorAll(".type-btn").forEach(btn => btn.addEventListener("click", () => {
+                    selectedType = btn.dataset.type;
+                    document.querySelectorAll(".type-btn").forEach(b => b.classList.toggle("active", b === btn));
+                    if (!editingId) $("mockName").value = `${selectedType} #${savedTests.length + 1}`;
+                }));
+
+                $("includeComputer").addEventListener("change", calculate);
+                $("testForm").addEventListener("submit", event => {
+                    event.preventDefault();
+                    const test = collectForm();
+                    if (Object.values(test.sections).some(v => v.left < 0)) {
+                        alert("Correct + Wrong cannot be greater than the total questions in a section.");
+                        return;
+                    }
+                    if (!test.date) { alert("Please select the test date."); return; }
+                    const index = savedTests.findIndex(t => t.id === test.id);
+                    if (index >= 0) savedTests[index] = test;
+                    else savedTests.push(test);
+                    persist();
+                    alert("Test saved in this tab's session storage.");
+                    clearForm();
+                });
+
+                $("resetBtn").addEventListener("click", () => {
+                    if (confirm("Clear the current form?")) clearForm();
+                });
+
+                $("proofFile").addEventListener("change", () => {
+                    $("proofName").textContent = $("proofFile").files[0]?.name || "No file selected";
+                });
+
+                $("exportBtn").addEventListener("click", () => {
+                    const payload = { app: "SSC Test Tracker", version: 1, exportedAt: new Date().toISOString(), tests: savedTests };
+                    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url; a.download = `ssc-test-tracker-${new Date().toISOString().slice(0,10)}.json`;
+                    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+                });
+
+                $("importBtn").addEventListener("click", () => $("importFile").click());
+                $("importFile").addEventListener("change", async event => {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    try {
+                        const parsed = JSON.parse(await file.text());
+                        const incoming = Array.isArray(parsed) ? parsed : parsed.tests;
+                        if (!Array.isArray(incoming)) throw new Error("JSON must contain a tests array.");
+                        if (!incoming.every(t => t && typeof t === "object" && t.sections && typeof t.totalScore === "number")) {
+                            throw new Error("One or more test records have an invalid format.");
+                        }
+                        const replace = confirm("Press OK to replace the current saved tests. Press Cancel to merge imported tests.");
+                        if (replace) savedTests = incoming;
+                        else {
+                            const byId = new Map(savedTests.map(t => [t.id, t]));
+                            incoming.forEach(t => byId.set(t.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())), t));
+                            savedTests = [...byId.values()];
+                        }
+                        persist();
+                        alert(`${incoming.length} test record(s) imported successfully.`);
+                    } catch (error) {
+                        alert("Import failed: " + error.message);
+                    } finally {
+                        event.target.value = "";
+                    }
+                });
+
+                $("testDate").value = new Date().toISOString().slice(0, 10);
+                $("mockName").value = `Full Mock #${savedTests.length + 1}`;
+                renderRows();
+                renderSaved();
+            })();
+    </script>
+</body>
+</html>
