@@ -707,6 +707,315 @@
                     grid-template-columns: 1fr;
                 }
             }
+
+            /* ANDROID / SMALL-SCREEN OVERRIDES — deliberately supports Desktop-site viewport too */
+            .page {
+                width: min(100% - 32px, 1120px);
+            }
+
+            .test-types {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+
+            .meta-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            @@media screen and (max-width: 1100px) {
+                .page {
+                    width: 100%;
+                    max-width: 760px;
+                    padding: 22px 16px 44px;
+                }
+
+                .test-types {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 10px;
+                }
+
+                .type-btn {
+                    min-width: 0;
+                    min-height: 96px;
+                    padding: 14px;
+                }
+
+                    .type-btn strong {
+                        font-size: 15px;
+                        line-height: 1.25;
+                    }
+
+                    .type-btn span {
+                        font-size: 12px;
+                        line-height: 1.4;
+                    }
+
+                .meta-grid {
+                    grid-template-columns: 1fr;
+                    gap: 14px;
+                }
+
+                    .meta-grid > div {
+                        min-width: 0;
+                    }
+
+                    .meta-grid input {
+                        width: 100%;
+                    }
+
+                .panel {
+                    padding: 16px;
+                }
+
+                .mock-panel {
+                    padding: 7px;
+                }
+
+                .mock-inner {
+                    padding: 13px;
+                }
+
+                .mock-heading {
+                    grid-template-columns: minmax(0, 1fr);
+                }
+
+                    .mock-heading input, .mock-heading select {
+                        width: 100%;
+                    }
+
+                .table-wrap {
+                    overflow: visible;
+                }
+
+                table {
+                    min-width: 0;
+                    width: 100%;
+                }
+
+                    table thead {
+                        display: none;
+                    }
+
+                #sectionRows {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 11px;
+                }
+
+                    #sectionRows tr {
+                        display: grid;
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
+                        gap: 10px;
+                        padding: 13px;
+                        border: 1px solid var(--line);
+                        border-radius: 13px;
+                        background: #fffefa;
+                        box-shadow: 0 2px 8px rgba(49, 43, 29, .035);
+                    }
+
+                    #sectionRows td {
+                        display: block;
+                        min-width: 0;
+                        border: 0;
+                        padding: 0;
+                        text-align: left;
+                    }
+
+                        #sectionRows td:first-child {
+                            grid-column: 1 / -1;
+                            white-space: normal;
+                            font-size: 14px;
+                            padding: 0 0 9px;
+                            border-bottom: 1px solid #eeeae1;
+                        }
+
+                        #sectionRows td:nth-child(2)::before {
+                            content: "TOTAL QUESTIONS";
+                        }
+
+                        #sectionRows td:nth-child(3)::before {
+                            content: "CORRECT";
+                        }
+
+                        #sectionRows td:nth-child(4)::before {
+                            content: "WRONG";
+                        }
+
+                        #sectionRows td:nth-child(5)::before {
+                            content: "LEFT";
+                        }
+
+                        #sectionRows td:nth-child(6)::before {
+                            content: "TIME (MIN)";
+                        }
+
+                        #sectionRows td:nth-child(7)::before {
+                            content: "SCORE";
+                        }
+
+                        #sectionRows td:nth-child(8)::before {
+                            content: "ACCURACY";
+                        }
+
+                        #sectionRows td:nth-child(n+2)::before {
+                            display: block;
+                            margin: 0 0 5px 2px;
+                            color: var(--muted);
+                            font-size: 10px;
+                            font-weight: 800;
+                            letter-spacing: .035em;
+                        }
+
+                .section-input, .section-input.minutes {
+                    width: 100%;
+                    min-width: 0;
+                    min-height: 44px;
+                    padding: 9px 10px;
+                    border-radius: 11px;
+                    font-size: 16px;
+                    text-align: center;
+                }
+
+                .derived, .section-score, .section-accuracy {
+                    display: flex;
+                    align-items: center;
+                    min-height: 44px;
+                    padding: 9px 10px;
+                    border: 1px solid #e3dfd5;
+                    border-radius: 11px;
+                    background: #f8f6ef;
+                    font-size: 13px;
+                    font-weight: 750;
+                    white-space: normal;
+                    overflow-wrap: anywhere;
+                }
+
+                .section-name {
+                    align-items: center;
+                    white-space: normal;
+                }
+
+                .bottom-bar {
+                    align-items: stretch;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+
+                .actions {
+                    width: 100%;
+                    margin: 0;
+                }
+
+                    .actions button {
+                        flex: 1;
+                        min-height: 48px;
+                        font-size: 14px;
+                    }
+
+                .chips {
+                    gap: 7px;
+                }
+
+                .chip {
+                    font-size: 11px;
+                }
+
+                .toolbar {
+                    align-items: stretch;
+                    flex-direction: column;
+                }
+
+                .toolbar-actions {
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    width: 100%;
+                }
+
+                    .toolbar-actions button {
+                        min-height: 46px;
+                        padding: 10px 8px;
+                    }
+
+                .saved-item {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .saved-actions {
+                    display: flex;
+                    width: 100%;
+                }
+
+                    .saved-actions button {
+                        flex: 1;
+                        min-height: 44px;
+                    }
+
+                input, select, textarea {
+                    font-size: 16px;
+                }
+            }
+
+            @@media screen and (max-width: 420px) {
+                .page {
+                    padding: 16px 10px 34px;
+                }
+
+                h1 {
+                    font-size: 34px;
+                }
+
+                .test-types {
+                    gap: 8px;
+                }
+
+                .type-btn {
+                    min-height: 90px;
+                    padding: 10px;
+                }
+
+                    .type-btn strong {
+                        font-size: 14px;
+                    }
+
+                    .type-btn span {
+                        font-size: 11px;
+                    }
+
+                .panel {
+                    padding: 12px;
+                }
+
+                .mock-inner {
+                    padding: 9px;
+                }
+
+                #sectionRows tr {
+                    padding: 10px;
+                    gap: 8px;
+                }
+
+                .section-input, .section-input.minutes {
+                    padding: 8px 5px;
+                }
+
+                .toolbar-actions {
+                    grid-template-columns: 1fr 1fr;
+                }
+
+                    .toolbar-actions button {
+                        font-size: 12px;
+                    }
+            }
+
+            /* Prevent accidental horizontal page scrolling on phones */
+            html, body {
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            .page, .panel, .mock-inner, .saved-item {
+                min-width: 0;
+            }
     </style>
 </head>
 <body>
@@ -833,10 +1142,10 @@
         <tr data-section="${s.id}">
         <td><span class="section-name"><i class="section-dot" style="background:${s.color}"></i>${s.name}</span></td>
         <td><input class="section-input qs" type="number" min="0" max="300" value="${s.qs}" aria-label="${s.name} total questions"></td>
-        <td><input class="section-input correct" type="number" min="0" value="${s.id === "math" ? 24 : s.id === "reason" ? 26 : s.id === "english" ? 33 : s.id === "ga" ? 16 : 14}" aria-label="${s.name} correct"></td>
+        <td><input class="section-input correct" type="number" min="0" value="${s.id === "math" ? 24 : s.id === "reason" ? 30 : s.id === "english" ? 33 : s.id === "ga" ? 16 : 14}" aria-label="${s.name} correct"></td>
         <td><input class="section-input wrong" type="number" min="0" value="${s.id === "math" ? 4 : s.id === "reason" ? 2 : s.id === "english" ? 7 : s.id === "ga" ? 5 : 3}" aria-label="${s.name} wrong"></td>
         <td class="derived left">2</td>
-        <td><input class="section-input minutes" type="number" min="0" value="${s.id === "math" ? 30 : s.id === "reason" ? 30 : s.id === "english" ? 40 : s.id === "ga" ? 20 : 15}" aria-label="${s.name} minutes"></td>
+        <td><input class="section-input minutes" type="number" min="0" value="${s.id === "math" ? 28 : s.id === "reason" ? 30 : s.id === "english" ? 40 : s.id === "ga" ? 20 : 15}" aria-label="${s.name} minutes"></td>
         <td class="score section-score">68/${s.marks}</td>
         <td class="accuracy section-accuracy">86%</td>
         </tr>`).join("");
