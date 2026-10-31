@@ -444,7 +444,6 @@
             .table-wrap {
                 width: 100%;
             }
-
             @@media (max-width: 760px) {
                 .page {
                     width: 100%;
@@ -679,7 +678,6 @@
                         min-height: 40px;
                     }
             }
-
             @@media (max-width: 390px) {
                 .page {
                     padding-left: 9px;
@@ -1020,6 +1018,9 @@
 </head>
 <body>
     <div class="page">
+        <div class="eyebrow">Any test series · any test type</div>
+        <h1>Add a test <em>2 minutes.</em></h1>
+
         <div class="test-types" id="testTypes">
             <button type="button" class="type-btn active" data-type="Full Test"><strong>Full Test</strong><span>Complete paper · 150 Q · 2h 15m</span></button>
             <button type="button" class="type-btn" data-type="Sectional Test"><strong>Sectional Test</strong><span>One module on its own timer</span></button>
@@ -1142,10 +1143,10 @@
         <tr data-section="${s.id}">
         <td><span class="section-name"><i class="section-dot" style="background:${s.color}"></i>${s.name}</span></td>
         <td><input class="section-input qs" type="number" min="0" max="300" value="${s.qs}" aria-label="${s.name} total questions"></td>
-        <td><input class="section-input correct" type="number" min="0" value="${s.id === "math" ? 24 : s.id === "reason" ? 30 : s.id === "english" ? 33 : s.id === "ga" ? 16 : 14}" aria-label="${s.name} correct"></td>
+        <td><input class="section-input correct" type="number" min="0" value="${s.id === "math" ? 24 : s.id === "reason" ? 26 : s.id === "english" ? 33 : s.id === "ga" ? 16 : 14}" aria-label="${s.name} correct"></td>
         <td><input class="section-input wrong" type="number" min="0" value="${s.id === "math" ? 4 : s.id === "reason" ? 2 : s.id === "english" ? 7 : s.id === "ga" ? 5 : 3}" aria-label="${s.name} wrong"></td>
         <td class="derived left">2</td>
-        <td><input class="section-input minutes" type="number" min="0" value="${s.id === "math" ? 28 : s.id === "reason" ? 30 : s.id === "english" ? 40 : s.id === "ga" ? 20 : 15}" aria-label="${s.name} minutes"></td>
+        <td><input class="section-input minutes" type="number" min="0" value="${s.id === "math" ? 28 : s.id === "reason" ? 27 : s.id === "english" ? 38 : s.id === "ga" ? 17 : 13}" aria-label="${s.name} minutes"></td>
         <td class="score section-score">68/${s.marks}</td>
         <td class="accuracy section-accuracy">86%</td>
         </tr>`).join("");
