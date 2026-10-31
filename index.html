@@ -1018,14 +1018,23 @@
 </head>
 <body>
     <div class="page">
-        <h1>CGL MAINS</em></h1>
+        <h1>CGL MAINS 26</em></h1>
 
         <div class="test-types" id="testTypes">
             <button type="button" class="type-btn active" data-type="Full Test"><strong>Full Test</strong><span>Complete paper · 150 Q · 2h 15m</span></button>
             <button type="button" class="type-btn" data-type="Sectional Test"><strong>Sectional Test</strong><span>One module on its own timer</span></button>
+            <button type="button" class="type-btn" data-type="Topic Test"><strong>Topic Test</strong><span>Practice set on one topic</span></button>
+            <button type="button" class="type-btn" data-type="Previous Year Paper"><strong>Previous Year Paper</strong><span>Actual SSC CGL Mains paper</span></button>
         </div>
 
         <form id="testForm">
+            <div class="panel">
+                <div class="meta-grid">
+                    <div><label for="testDate">▦ &nbsp;Test date</label><input id="testDate" type="date" required /></div>
+                    <div><label for="rank">♙ &nbsp;Your rank on platform (optional)</label><input id="rank" type="number" min="1" placeholder="e.g. 812" /></div>
+                    <div><label for="candidates">♧ &nbsp;Total candidates (optional)</label><input id="candidates" type="number" min="1" placeholder="e.g. 23500" /></div>
+                </div>
+            </div>
 
             <div class="panel">
                 <label class="notes-label" for="notes">▤ &nbsp;Notes for yourself (optional)</label>
